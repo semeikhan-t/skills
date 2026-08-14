@@ -5,15 +5,15 @@ Agent skill for psychology-driven UX. Apply proven principles (smart defaults, g
 ## Install
 
 ```bash
-npx skills add semeikhan-t/neverzero
+npx skills add semeikhan-t/skills
 ```
 
 ```bash
-npx skills add semeikhan-t/neverzero --skill neverzero
+npx skills add semeikhan-t/skills --skill neverzero
 ```
 
 ```bash
-gh skill install semeikhan-t/neverzero
+gh skill install semeikhan-t/skills
 ```
 
 ## Usage
