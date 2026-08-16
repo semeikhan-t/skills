@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "neverzero": {
+      "source": "semeikhan-t/skills",
+      "sourceType": "github",
+      "skillPath": "skills/neverzero/SKILL.md",
+      "computedHash": "383735b25b5b02f74063e56bc897a38cbc2f8b6f435b970997f5d474d68f8a40"
+    }
+  }
+}
