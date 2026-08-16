@@ -1,10 +1,10 @@
 ---
 name: sharp-ui
-description: Full-stack frontend craft skill — visual design, 3-tier design tokens, psychological UX principles, optimistic UI, skeleton loading, accessibility (WCAG 2.2 AA), proportional layout, and anti-AI-slop standards for professional and complex product interfaces.
+description: Full-stack frontend craft skill — visual design, 3-tier design tokens, refined blocks/cards and button hierarchy (anti-raw), psychological UX principles, optimistic UI, skeleton loading, accessibility (WCAG 2.2 AA), proportional layout, and anti-AI-slop standards for professional and complex product interfaces.
 license: MIT
 metadata:
   author: semeikhan-t
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Frontend Master
@@ -89,6 +89,241 @@ All three are valid for the right brief. They are never valid as defaults. Where
 - "Submit", "Click here", "Learn more" with no surrounding context
 - Apologetic error messages
 - Filler microcopy that could belong to any product
+
+
+---
+
+## Part 1.5: Refined Blocks & Buttons (anti-raw)
+
+Raw UI looks like default browser styles or first-pass AI output: flat rectangles, harsh borders, no hierarchy of elevation, buttons that feel like plain `<button>` tags. Production interfaces treat surfaces and actions as a system with intentional depth, pressure, and feedback.
+
+### Blocks / Cards / Panels
+
+**Core principles**
+- One consistent elevation language. Never mix heavy drop-shadows with flat borders on the same screen without hierarchy.
+- Prefer soft layered surfaces over hard 1px borders when the product needs calm professionalism.
+- Internal padding must be larger than the gap between sibling blocks.
+- Content inside a block has its own rhythm (title → meta → body → actions).
+
+**Token-backed surface system (use these, never hardcode)**
+
+```css
+/* Elevation / surface tokens — define once */
+--surface-1: var(--color-surface);           /* base page */
+--surface-2: color-mix(in srgb, var(--color-surface) 92%, var(--color-text-primary)); /* raised */
+--surface-3: color-mix(in srgb, var(--color-surface) 85%, var(--color-text-primary)); /* higher */
+
+--shadow-xs: 0 1px 2px rgb(0 0 0 / 0.04);
+--shadow-sm: 0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04);
+--shadow-md: 0 4px 12px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
+--shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12), 0 4px 8px rgb(0 0 0 / 0.06);
+
+--radius-card: 12px;          /* or 0 / 8px / 16px — one decision for the product */
+--border-subtle: 1px solid color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+```
+
+**Card anatomy (required structure)**
+
+```css
+.card {
+  background: var(--surface-2);
+  border: var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);          /* 20–24px typical */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);              /* internal rhythm */
+  transition: box-shadow 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--color-text-primary) 14%, transparent);
+}
+
+.card[data-elevated="true"] {
+  box-shadow: var(--shadow-md);
+  background: var(--surface-3);
+}
+
+/* Optional header / footer zones */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-lg) * -1) 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: var(--border-subtle);
+}
+
+.card-footer {
+  margin: auto calc(var(--spacing-lg) * -1) calc(var(--spacing-lg) * -1);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: var(--border-subtle);
+  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+```
+
+**Rules that kill “сырость”**
+- Never use `box-shadow: 0 4px 6px rgba(0,0,0,0.1)` as a one-off. Always from the token scale.
+- Avoid pure black shadows; use low-opacity multi-layer shadows.
+- If the design is sharp (0–4px radius), compensate with stronger border contrast or a hairline + soft outer glow.
+- Interactive cards must have a clear hover state that does **not** scale the whole card (`transform: scale` on cards is almost always wrong).
+- Dense product tables/lists: prefer flat rows with subtle separators over individual cards unless the items are truly independent objects.
+
+### Buttons
+
+**Hierarchy is mandatory**
+1. **Primary** — one per section / view max. Highest visual weight.
+2. **Secondary** — outline or soft fill. Same size, lower contrast.
+3. **Ghost / Tertiary** — text + optional icon, minimal chrome.
+4. **Destructive** — never the same treatment as primary; usually outline + danger color or solid danger only after confirmation.
+
+**Size scale (fixed, not free-form)**
+
+| Size   | Height | Padding-x | Font        | Use case                  |
+|--------|--------|-----------|-------------|---------------------------|
+| xs     | 28px   | 10px      | text-xs     | dense tables, toolbars    |
+| sm     | 32px   | 12px      | text-sm     | secondary actions         |
+| md     | 40px   | 16px      | text-sm     | default                   |
+| lg     | 48px   | 20px      | text-base   | primary CTAs, mobile      |
+
+**Base button styles**
+
+```css
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  height: 40px;                        /* md default */
+  padding: 0 16px;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  border-radius: calc(var(--radius-card) * 0.6); /* slightly tighter than cards */
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease,
+    transform 80ms ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);       /* high-contrast text on accent */
+  box-shadow: var(--shadow-xs);
+}
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Secondary (outline) */
+.btn-secondary {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  color: var(--color-text-primary);
+}
+.btn-secondary:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-primary) 28%, transparent);
+}
+
+/* Ghost */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  color: var(--color-text-primary);
+}
+
+/* Destructive */
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+}
+.btn-danger-outline {
+  background: transparent;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+```
+
+**Loading & success states (never replace label with spinner only)**
+
+```css
+.btn[data-loading="true"] {
+  position: relative;
+  color: transparent;                  /* keep width */
+}
+.btn[data-loading="true"]::after {
+  content: "";
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+/* Better: keep original label + small spinner beside it */
+```
+
+**Icon + text rules**
+- Icon size ≈ 1em of the button font-size.
+- Gap between icon and text: 6–8px (not equal to horizontal padding).
+- Icon-only buttons must still meet 40×40px minimum hit target (use padding, not just the icon).
+
+**What makes buttons look raw (forbidden without justification)**
+- Default browser blue / gray.
+- `border-radius: 4px` mixed with 12px cards.
+- Primary and secondary having identical visual weight.
+- No `:active` press feedback.
+- Spinner that replaces the entire label (layout shift + loss of context).
+- Full-width primary buttons on desktop when the action is not the only thing on the page.
+- Heavy gradient fills or neon glow on ordinary product actions.
+
+### Quick decision table
+
+| Element          | Preferred treatment                          | Avoid                          |
+|------------------|----------------------------------------------|--------------------------------|
+| Content card     | soft shadow + subtle border + 12–16px radius | thick border + no shadow       |
+| Settings panel   | flat surface-2, hairline border              | elevated card for every group  |
+| Primary action   | solid accent, medium shadow                  | outline primary                |
+| Secondary action | outline or soft fill                         | solid gray                     |
+| Table row action | ghost or icon-only on hover                  | always-visible solid buttons   |
+| Destructive      | outline danger until confirmed               | solid red as default           |
+
+When in doubt: reduce chrome, increase consistency of radius/shadow/padding, and give every interactive element a clear pressed state. That single change removes 80 % of “сырой” feel.
 
 ---
 
@@ -572,6 +807,8 @@ Voice and label quality are part of the design. Weak copy breaks otherwise stron
 - [ ] 3-tier token system defined (Reference → System → Component)
 - [ ] Signature element stated and present in the build
 - [ ] No forbidden AI defaults (typography, color, layout, motion, copy)
+- [ ] Blocks/cards use the elevation + radius + padding system (no raw flat rectangles)
+- [ ] Buttons follow primary / secondary / ghost hierarchy with consistent size scale and press feedback
 - [ ] Proportions follow a real scale (type ratio, spacing unit, consistent aspect ratios)
 - [ ] Line length capped at 65–75ch for body text
 
