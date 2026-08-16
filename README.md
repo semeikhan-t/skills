@@ -82,6 +82,7 @@ Pin a release:
 
 ```bash
 gh skill install semeikhan-t/skills neverzero --pin v1.0.1
+gh skill install semeikhan-t/skills sharp-ui --pin v1.1.0
 ```
 
 ---
@@ -124,5 +125,7 @@ README.md
 |--|--|
 | Repository | https://github.com/semeikhan-t/skills |
 | Catalog | https://skills.sh/semeikhan-t/skills |
+| neverzero on skills.sh | https://skills.sh/semeikhan-t/skills/neverzero |
+| sharp-ui on skills.sh | https://skills.sh/semeikhan-t/skills/sharp-ui |
 | Latest release | https://github.com/semeikhan-t/skills/releases |
 | License | [MIT](LICENSE) |
