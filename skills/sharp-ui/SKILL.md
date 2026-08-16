@@ -1,10 +1,10 @@
 ---
 name: sharp-ui
-description: Full-stack frontend craft skill — visual design, psychological UX principles, optimistic UI, skeleton loading, proportional layout, and anti-AI-slop standards for professional and complex product interfaces.
+description: Full-stack frontend craft skill — visual design, 3-tier design tokens, psychological UX principles, optimistic UI, skeleton loading, accessibility (WCAG 2.2 AA), proportional layout, and anti-AI-slop standards for professional and complex product interfaces.
 license: MIT
 metadata:
   author: semeikhan-t
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Frontend Master
@@ -19,9 +19,28 @@ You are the design lead at a small studio hired for your point of view, not your
 
 Before writing a single line of code, name: the product, its audience, and the screen's one job. If the brief doesn't say — decide and state your decision. Every color, type, and layout choice must be traceable to that decision. No floating aesthetics.
 
-### Design token system (mandatory)
+### Design token system (mandatory — 3 tiers)
 
-Define before building:
+Components never hardcode hex, px, or rem values. Everything resolves through tokens.
+
+#### Tier 1 — Reference (raw values)
+- Palette: named hex values (`primary40`, `neutral10`, …)
+- Type scale: actual rem values + line-heights
+- Spacing ramp: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64…
+- Radius scale, elevation / shadow scale
+
+#### Tier 2 — System (semantic roles)
+- `--color-surface`, `--color-surface-muted`
+- `--color-text-primary`, `--color-text-secondary`
+- `--color-accent`, `--color-accent-hover`
+- `--color-success`, `--color-warning`, `--color-danger`
+- `--spacing-md`, `--radius-card`, `--shadow-soft`
+
+#### Tier 3 — Component (usage)
+- Button uses `--color-accent` → never a raw hex
+- Card padding uses `--spacing-md`
+
+**Define before any code:**
 
 - **Color:** 4–6 named hex values. Name them semantically (`--surface`, `--accent`, `--text-primary`) not generically (`--blue`). One color carries personality; the rest support.
 - **Type:** at minimum two roles — a characterful display face (used sparingly) and a body face. Add a utility/data face if the product handles numbers or dense tables. Set a real scale: not just `sm/md/lg` but actual rem values with intentional line heights.
@@ -39,6 +58,37 @@ AI-generated design clusters around three tells:
 All three are valid for the right brief. They are never valid as defaults. Where the brief leaves an axis free, don't spend it on one of these. Take a real risk you can justify.
 
 **Process:** brainstorm → token system → one paragraph critique against the brief → build → screenshot critique → ship. Do the first two passes in your thinking; only show the user output you're confident in.
+
+### Forbidden AI Defaults (hard fail)
+
+**Typography**
+- Inter, Roboto, Arial, system-ui as the primary display face
+- Identical font family for display and body
+- Generic weight hierarchy with no character
+
+**Color**
+- Purple-on-white gradients as a hero treatment
+- Warm cream (#F4F1EA) + terracotta as a default palette
+- Near-black + acid-green or vermilion as a default palette
+- Low-contrast "vibes" text (decorative opacity tricks)
+
+**Layout**
+- Cookie-cutter SaaS hero: big number + small label + gradient accent
+- Numbered markers (01 / 02 / 03) when content is not sequential
+- Absolute positioning without auto-layout thinking
+- Magic numbers instead of token scale
+
+**Icons & Motion**
+- Emoji as UI icons
+- Scale transforms that shift layout on hover
+- `transition: all`
+- Animations > 300ms on repeated interactions
+- Entrance animations without a corresponding exit
+
+**Copy**
+- "Submit", "Click here", "Learn more" with no surrounding context
+- Apologetic error messages
+- Filler microcopy that could belong to any product
 
 ---
 
@@ -478,14 +528,52 @@ Motion is information delivery, not decoration.
 
 ---
 
+## Part 9: Accessibility
+
+WCAG 2.2 AA is the minimum. Ship nothing that fails these.
+
+**Must**
+- Contrast ≥ 4.5:1 for normal text, ≥ 3:1 for large text (18px+) and UI components
+- Visible `:focus-visible` rings — never `outline: none` without a replacement
+- Full keyboard support with a logical tab order
+- Focus trap inside modals and drawers; restore focus to trigger on close
+- Hit targets ≥ 24px on desktop, ≥ 44px on mobile
+- `font-size ≥ 16px` on mobile inputs (prevents iOS auto-zoom)
+- `prefers-reduced-motion` respected globally (see Motion section)
+- `user-scalable=no` is forbidden — never block browser zoom
+- Paste never blocked in inputs
+- Loading buttons keep their original label and add a spinner; label never disappears
+
+**Should**
+- Semantic HTML first — use the element that already means what you need
+- `aria-*` only when native semantics are insufficient, not as a shortcut
+- Color is never the only indicator of state — pair it with an icon or text
+
+---
+
+## Part 10: Writing in UI
+
+Voice and label quality are part of the design. Weak copy breaks otherwise strong UI.
+
+- Active voice, sentence case everywhere
+- Buttons name the exact action: "Save changes", "Publish", "Delete permanently" — not "Submit" or "OK"
+- Use the same verb through the full flow: if the button says "Publish", the toast says "Published"
+- Errors state what happened and how to fix it — never "An error occurred"
+- Empty states invite action: "No projects yet — create your first one" beats "Nothing here"
+- No cleverness over clarity; the user is doing a job, not reading a brochure
+- Labels describe what the user controls, not what the system calls it internally
+
+---
+
 ## Pre-Ship Checklist
 
-### Visual design
-- [ ] Defined a named token system (colors, type, spacing, radius) before building
-- [ ] The design has a signature element that could only belong to this brief
-- [ ] No AI slop defaults in layout, type, color, motion, or copy
+### Visual & Identity
+- [ ] Product + audience + single job named before any code
+- [ ] 3-tier token system defined (Reference → System → Component)
+- [ ] Signature element stated and present in the build
+- [ ] No forbidden AI defaults (typography, color, layout, motion, copy)
 - [ ] Proportions follow a real scale (type ratio, spacing unit, consistent aspect ratios)
-- [ ] Line length is capped at 65–75ch for body text
+- [ ] Line length capped at 65–75ch for body text
 
 ### Loading & state
 - [ ] Skeletons mirror real content structure with shimmer animation
@@ -510,9 +598,22 @@ Motion is information delivery, not decoration.
 - [ ] Upgrade/loss copy is framed around what disappears, not what's gained
 - [ ] Data screens animate in; skeletons used over spinners; no layout shift on load
 
+### Accessibility
+- [ ] Contrast ratios meet WCAG 2.2 AA (4.5:1 normal text, 3:1 large/UI)
+- [ ] `:focus-visible` rings present and visible on all interactive elements
+- [ ] Keyboard navigable in logical tab order; focus trap in modals
+- [ ] 44px tap targets on mobile for all clickable elements
+- [ ] `prefers-reduced-motion` respected globally
+- [ ] Browser zoom not blocked (`user-scalable=no` absent)
+- [ ] Color is not the only state indicator
+
+### Writing
+- [ ] Buttons name the exact action (not "Submit" / "OK")
+- [ ] Same verb used through the full flow (button → toast → confirmation)
+- [ ] Errors explain what happened and how to fix it
+- [ ] Empty states invite action
+
 ### Polish
 - [ ] All interactive elements have motion response (whileTap / whileHover minimum)
-- [ ] `prefers-reduced-motion` respected
-- [ ] Keyboard navigable in logical order
-- [ ] 44px minimum tap targets on all clickable elements
 - [ ] Mobile responsive without breaking the design concept
+- [ ] No layout shift on load
