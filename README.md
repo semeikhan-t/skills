@@ -8,6 +8,31 @@ Installable with [`npx skills`](https://skills.sh) / `gh skill`. Indexed on [ski
 
 ## Skills
 
+### hackathon-tz
+
+Generates a full hackathon technical specification (ТЗ) as a Markdown file the whole team — and AI agents — can follow.
+
+**Interview first, then ship the spec.** The agent collects the brief, team roster, and stack preferences before writing anything, proposes a default stack when needed, and produces a structured ТЗ with MVP scope, API sketch, per-developer task boards, roadmap, and verification checklists.
+
+| Section | What you get |
+|---------|--------------|
+| Project brief | Problem, solution, audience, value proposition |
+| Team & stack | Roles, tech choices, suggested repo layout |
+| Functional requirements | Must / Should / Won't Have for a realistic MVP |
+| API endpoints | Domain-grouped request/response sketches |
+| Task breakdown | Per-developer boards with priorities and DoD |
+| Roadmap | Individual timelines plus dependency graph |
+| Verification | Block-level checklists before demo |
+| Risks | Constraints, bottlenecks, mitigation notes |
+
+**Use when:** preparing for a hackathon, writing a team ТЗ, splitting work across members, building a 24–48h roadmap, or when the user invokes `/hackathon-tz`.
+
+**Output:** `ТЗ_[hackathon_name].md`
+
+**Source:** [`skills/hackathon-tz/SKILL.md`](skills/hackathon-tz/SKILL.md)
+
+---
+
 ### neverzero
 
 Psychology-driven UX for product UI. Before writing interface code, the agent picks **one or two** principles that fit the screen, states the choice, and applies them in logic and structure — not only in copy.
@@ -60,15 +85,11 @@ All skills in this repo:
 npx skills add semeikhan-t/skills
 ```
 
-Only `neverzero`:
+A single skill:
 
 ```bash
+npx skills add semeikhan-t/skills --skill hackathon-tz
 npx skills add semeikhan-t/skills --skill neverzero
-```
-
-Only `sharp-ui`:
-
-```bash
 npx skills add semeikhan-t/skills --skill sharp-ui
 ```
 
@@ -81,6 +102,7 @@ gh skill install semeikhan-t/skills
 Pin a release:
 
 ```bash
+gh skill install semeikhan-t/skills hackathon-tz --pin v1.0.0
 gh skill install semeikhan-t/skills neverzero --pin v1.0.1
 gh skill install semeikhan-t/skills sharp-ui --pin v1.1.0
 ```
@@ -88,6 +110,13 @@ gh skill install semeikhan-t/skills sharp-ui --pin v1.1.0
 ---
 
 ## How the agent should use these skills
+
+### hackathon-tz
+
+1. Ask the discovery questions in one message (brief, team, stack) before writing the ТЗ.
+2. If the stack is unset, propose the default table and wait for confirmation.
+3. Generate `ТЗ_[hackathon_name].md` with the full structure from the skill.
+4. Keep scope honest: Must Have for demo, Should Have if time remains, Won't Have explicit.
 
 ### neverzero
 
@@ -109,6 +138,8 @@ gh skill install semeikhan-t/skills sharp-ui --pin v1.1.0
 
 ```text
 skills/
+├── hackathon-tz/
+│   └── SKILL.md
 ├── neverzero/
 │   └── SKILL.md
 └── sharp-ui/
@@ -125,6 +156,7 @@ README.md
 |--|--|
 | Repository | https://github.com/semeikhan-t/skills |
 | Catalog | https://skills.sh/semeikhan-t/skills |
+| hackathon-tz on skills.sh | https://skills.sh/semeikhan-t/skills/hackathon-tz |
 | neverzero on skills.sh | https://skills.sh/semeikhan-t/skills/neverzero |
 | sharp-ui on skills.sh | https://skills.sh/semeikhan-t/skills/sharp-ui |
 | Latest release | https://github.com/semeikhan-t/skills/releases |
